@@ -1,0 +1,9 @@
+{"type":"FeatureCollection",
+  "features":[{"type":"Feature",
+    "geometry":{"type":"Point","coordinates":[46.623701,24.719117]},
+    "properties":{"recycleId":"44d1cb3e-cd71-4c22-90ad-8e349162ebeb",
+      "recycleType":"Paper","recycleStatus":"Normal"}},
+    {"type":"Feature",
+      "geometry":{"type":"Point","coordinates":[46.625756,24.718473]},
+      "properties":{"recycleId":"8e3e6298-aa85-4b23-bd14-c67513e6fe0d",
+        "recycleType":"General","recycleStatus":"Normal"}}]}

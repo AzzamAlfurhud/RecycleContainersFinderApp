@@ -61,12 +61,25 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
         layer1 = new GeoJsonLayer(mMap,jsonObject);
         layer1.addLayerToMap();
         Iterable<GeoJsonFeature> GF = layer1.getFeatures();
-
+        int i = 0;
         for (GeoJsonFeature g: GF
              ) {
+            try {
+                featureS = (JSONArray) jsonObject.get("features");
+                feature = featureS.getJSONObject(i++);
+                properties = (JSONObject) feature.get("properties");
+                geometry = (JSONObject) feature.get("geometry");
+                coordinates = (JSONArray) geometry.get("coordinates");
+                latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
+//            Log.i(TAG, "onPostExecute: " + );
+                type = properties.getString("recycleType");
+                status = properties.getString("recycleStatus");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             MarkerOptions mMO = g.getMarkerOptions();
             mMO.snippet("Type: "+type+" Status: "+status);
-            mMarker = mMap.addMarker(mMO.position(latLng).title(mMO.getSnippet()));
+            mMap.addMarker(mMO.position(latLng).title(mMO.getSnippet()));
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
                 @Override

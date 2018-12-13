@@ -56,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
-        loadGeoJsonTask.execute("http://192.168.8.102:45457/api/recycles");
+        loadGeoJsonTask.execute("http://192.168.8.101:45457/api/recycles");
 
 
 //            layer1 = new GeoJsonLayer(mMap, R.raw.response,

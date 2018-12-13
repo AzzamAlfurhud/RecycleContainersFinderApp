@@ -6,8 +6,11 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.Layer;
+import com.google.maps.android.data.geojson.GeoJsonFeature;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 
 import org.json.JSONArray;
@@ -19,10 +22,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject>{
+public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
 
 
     private static final String TAG = "LoadGeoJsonTask";
+    public Marker mMarker = null;
+    String s = "";
 
     private GoogleMap mMap;
 
@@ -33,18 +38,47 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject>{
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
+        JSONArray featureS,coordinates;
+        JSONObject feature,properties,geometry;
+        String type = "";
+        String status = "";
+        LatLng latLng = null;
         try {
-            JSONArray featureS = (JSONArray) jsonObject.get("features");
-            JSONObject feature = featureS.getJSONObject(0);
-            JSONObject properties = (JSONObject) feature.get("properties");
-            Log.i(TAG, "onPostExecute: " + properties.getString("recycleType"));
+            featureS = (JSONArray) jsonObject.get("features");
+            feature = featureS.getJSONObject(0);
+            properties = (JSONObject) feature.get("properties");
+            geometry = (JSONObject) feature.get("geometry");
+            coordinates = (JSONArray) geometry.get("coordinates");
+            latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
+//            Log.i(TAG, "onPostExecute: " + );
+            type = properties.getString("recycleType");
+            status = properties.getString("recycleStatus");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         GeoJsonLayer layer1 = null;
-        layer1 = new GeoJsonLayer(mMap,jsonObject);
 
+        layer1 = new GeoJsonLayer(mMap,jsonObject);
         layer1.addLayerToMap();
+        Iterable<GeoJsonFeature> GF = layer1.getFeatures();
+
+        for (GeoJsonFeature g: GF
+             ) {
+            MarkerOptions mMO = g.getMarkerOptions();
+            mMO.snippet("Type: "+type+" Status: "+status);
+            mMarker = mMap.addMarker(mMO.position(latLng).title(mMO.getSnippet()));
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
+
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    marker.showInfoWindow();
+                    return true;
+                }
+            });
+
+        }
+
+
 
     }
 
@@ -68,6 +102,7 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject>{
     protected JSONObject doInBackground(String... strings) {
         return readJSON(strings[0]);
     }
+
 
 
 }

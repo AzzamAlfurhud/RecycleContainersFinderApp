@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PostActivity"
+    android:padding="16dp">
+
+    <!--<EditText-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:hint="Enter type"-->
+    <!--android:id="@+id/et_type"/>-->
+    <!--<EditText-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:hint="Enter status"-->
+    <!--android:id="@+id/et_status" />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Type"
+        android:textSize="24sp"
+        android:layout_height="wrap_content" />
+
+    <RadioGroup
+        android:id="@+id/rg_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_type_general"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="General"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_type_paper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Paper"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_type_bread"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bread"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_type_cloth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cloth"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_type_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other"
+            />
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Status"
+        android:textSize="24sp"
+        android:layout_height="wrap_content" />
+
+    <RadioGroup
+        android:id="@+id/rg_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_status_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_status_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Normal"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_status_full"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full"
+            />
+
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_gravity="bottom"
+            android:id="@+id/btn_submit"/>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -78,8 +78,7 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
                 e.printStackTrace();
             }
             MarkerOptions mMO = g.getMarkerOptions();
-            mMO.snippet("Type: "+type+" Status: "+status);
-            mMap.addMarker(mMO.position(latLng).title(mMO.getSnippet()));
+            mMap.addMarker(mMO.position(latLng).title("Type: "+type+" Status: "+status));
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
                 @Override
@@ -114,6 +113,10 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
     @Override
     protected JSONObject doInBackground(String... strings) {
         return readJSON(strings[0]);
+    }
+
+    public void showInfo(){
+
     }
 
 

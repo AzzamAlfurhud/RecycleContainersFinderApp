@@ -1,5 +1,6 @@
 package com.example.max.recyclecontainersfinder;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 
 import org.json.JSONException;
@@ -38,6 +41,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mMap != null) {
+            if (mPostMarker != null) {
+                mPostMarker.remove();
+                mPostMarker = null;
+            }
+            LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
+            loadGeoJsonTask.execute(Constants.url);
+        }
+    }
+
+    private Marker mPostMarker;
 
     /**
      * Manipulates the map once available.
@@ -56,8 +73,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
-        loadGeoJsonTask.execute("http://192.168.8.101:45457/api/recycles");
+        loadGeoJsonTask.execute(Constants.url);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(final LatLng latLng) {
+                // TODO: Imp
+                if(mPostMarker == null) {
+                    mPostMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("add new recycle"));
+                    mPostMarker.showInfoWindow();
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            Intent intent = new Intent(MapsActivity.this,PostActivity.class);
+                            intent.putExtra(PostActivity.LAT_LONG, latLng);
+                            MapsActivity.this.startActivity(intent);
+                        }
+                    });
+                }
+                else {
+                    mPostMarker.remove();
+                    mPostMarker = null;
+                }
 
+            }
+        });
 
 //            layer1 = new GeoJsonLayer(mMap, R.raw.response,
 //                    getApplicationContext());

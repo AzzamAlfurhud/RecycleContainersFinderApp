@@ -1,5 +1,6 @@
 package com.example.max.recyclecontainersfinder;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -23,13 +24,17 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
 
 
     private static final String TAG = "LoadGeoJsonTask";
+
     public Marker mMarker = null;
+    private Map<Marker, RecycleProperties> allMarkersMap;
     String s = "";
 
     private GoogleMap mMap;
@@ -44,22 +49,12 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
         //get type and status
         JSONArray featureS,coordinates;
         JSONObject feature,properties,geometry;
+        properties = null;
+        String id = "";
         String type = "";
         String status = "";
         LatLng latLng = null;
-/*        try {
-            featureS = (JSONArray) jsonObject.get("features");
-            feature = featureS.getJSONObject(0);
-            properties = (JSONObject) feature.get("properties");
-            geometry = (JSONObject) feature.get("geometry");
-            coordinates = (JSONArray) geometry.get("coordinates");
-            latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
-//            Log.i(TAG, "onPostExecute: " + );
-            type = properties.getString("recycleType");
-            status = properties.getString("recycleStatus");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+
         //adding the layer to the map
         GeoJsonLayer layer1 = null;
         layer1 = new GeoJsonLayer(mMap,jsonObject);
@@ -77,42 +72,41 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
                 geometry = (JSONObject) feature.get("geometry");
                 coordinates = (JSONArray) geometry.get("coordinates");
                 latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
-//            Log.i(TAG, "onPostExecute: " + );
+                id = properties.getString("recycleId");
                 type = properties.getString("recycleType");
                 status = properties.getString("recycleStatus");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            // customize color
+            //set properties object for markers' map
             MarkerOptions mMO = g.getMarkerOptions();
+            // customize color
+            String snippet = id+"^"+type+"^"+status;
             if(status.equalsIgnoreCase("Empty")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                        .snippet(snippet)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
             }
             else if(status.equalsIgnoreCase("Normal")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                        .snippet(snippet)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
             }
             else if(status.equalsIgnoreCase("Full")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                        .snippet(snippet)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
-            mMap.addMarker(mMO);
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    marker.showInfoWindow();
-                    return true;
-                }
-            });
+            mMap.addMarker(mMO);
 
         }
 
 
 
     }
+
 
     private JSONObject readJSON(String urlString) {
         JSONObject jsonObject = null;

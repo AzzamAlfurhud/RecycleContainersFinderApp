@@ -55,7 +55,6 @@ public class PostActivity extends AppCompatActivity {
                     jsonObject.put("TypeId", checkedTypeRadioButton.getText().toString());
                     jsonObject.put("StatusId", checkedStatusRadioButton.getText().toString());
                     postJsonTask.execute(jsonObject);
-                    Log.i("Ali", "onClick: " + jsonObject.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

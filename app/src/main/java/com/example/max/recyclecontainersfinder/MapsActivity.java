@@ -3,6 +3,8 @@ package com.example.max.recyclecontainersfinder;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -11,14 +13,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "MapsActivity";
-
     private GoogleMap mMap;
     private Marker mPostMarker;
+    private String[] values;
 
 
     @Override
@@ -57,13 +68,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        http://localhost:53575/api/recycles
+
         mMap = googleMap;
         LatLng center = new LatLng(24.717517, 46.624301);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
         loadGeoJsonTask.execute(Constants.url);
+        
+        
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
@@ -87,30 +100,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
+
             @Override
             public boolean onMarkerClick(Marker marker) {
+                String tempSnippet = "";
+                if(marker.getTitle() != null) {
+                    tempSnippet = marker.getSnippet();
+                    marker.setSnippet("");
+                    marker.showInfoWindow();
+                    marker.setSnippet(tempSnippet);
+                    values = tempSnippet.split("\\^");
+                }
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    // TODO implement putActivity
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-
+                        Intent intent = new Intent(MapsActivity.this,PutActivity.class);
+                        intent.putExtra(PutActivity.RECYCLE_ID,values[0]);
+                        intent.putExtra(PutActivity.TYPE_ID,values[1]);
+                        intent.putExtra(PutActivity.STATUS_ID,values[2]);
+                        MapsActivity.this.startActivity(intent);
                     }
                 });
                 return true;
             }
         });
 
-//            layer1 = new GeoJsonLayer(mMap, R.raw.response,
-//                    getApplicationContext());
-//            layer1 = new GeoJsonLayer(mMap,JSONobject);
-//        layer1 = new GeoJsonLayer(mMap, readJSON("http://localhost:53575/api/recycles"));
-//        readJSON("https://jsonplaceholder.typicode.com/todos/1");
-//        layer1.addLayerToMap();
 
-        // Add a marker in Sydney and move the camera
-       /* LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
     }
+
+
+
 }

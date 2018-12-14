@@ -1,10 +1,13 @@
 package com.example.max.recyclecontainersfinder;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,12 +41,13 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
+        //get type and status
         JSONArray featureS,coordinates;
         JSONObject feature,properties,geometry;
         String type = "";
         String status = "";
         LatLng latLng = null;
-        try {
+/*        try {
             featureS = (JSONArray) jsonObject.get("features");
             feature = featureS.getJSONObject(0);
             properties = (JSONObject) feature.get("properties");
@@ -55,11 +59,13 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
             status = properties.getString("recycleStatus");
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
+        //adding the layer to the map
         GeoJsonLayer layer1 = null;
-
         layer1 = new GeoJsonLayer(mMap,jsonObject);
         layer1.addLayerToMap();
+
+        //loop through features to show infoWindow
         Iterable<GeoJsonFeature> GF = layer1.getFeatures();
         int i = 0;
         for (GeoJsonFeature g: GF
@@ -77,8 +83,22 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            // customize color
             MarkerOptions mMO = g.getMarkerOptions();
-            mMap.addMarker(mMO.position(latLng).title("Type: "+type+" Status: "+status));
+            if(status.equalsIgnoreCase("Empty")){
+                mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+            }
+            else if(status.equalsIgnoreCase("Normal")){
+                mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+            }
+            else if(status.equalsIgnoreCase("Full")){
+                mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
+            mMap.addMarker(mMO);
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
                 @Override

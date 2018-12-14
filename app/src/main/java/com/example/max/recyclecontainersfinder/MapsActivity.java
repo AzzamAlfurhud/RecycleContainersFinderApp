@@ -3,7 +3,6 @@ package com.example.max.recyclecontainersfinder;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,23 +11,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.data.geojson.GeoJsonLayer;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Scanner;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "MapsActivity";
 
     private GoogleMap mMap;
+    private Marker mPostMarker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +45,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private Marker mPostMarker;
 
     /**
      * Manipulates the map once available.
@@ -77,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
-                // TODO: Imp
                 if(mPostMarker == null) {
                     mPostMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("add new recycle"));
                     mPostMarker.showInfoWindow();
@@ -95,6 +84,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mPostMarker = null;
                 }
 
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+
+                    }
+                });
+                return true;
             }
         });
 

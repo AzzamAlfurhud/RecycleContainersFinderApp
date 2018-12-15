@@ -51,7 +51,6 @@ public class PostActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("Longitude", latLng.longitude);
                     jsonObject.put("Latitude", latLng.latitude);
-                    jsonObject.put("CreatedOn", "2018-12-09T06:27:02+03:00");
                     jsonObject.put("TypeId", checkedTypeRadioButton.getText().toString());
                     jsonObject.put("StatusId", checkedStatusRadioButton.getText().toString());
                     postJsonTask.execute(jsonObject);

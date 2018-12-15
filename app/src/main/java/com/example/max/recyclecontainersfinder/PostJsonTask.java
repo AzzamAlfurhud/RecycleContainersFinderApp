@@ -32,9 +32,9 @@ public class PostJsonTask extends AsyncTask<JSONObject,Void,Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean)
-            Toast.makeText(postActivity, "The recycle was successfully added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(postActivity, "The recycle was successfully added", Toast.LENGTH_LONG).show();
         else
-            Toast.makeText(postActivity, "An error occured, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(postActivity, "An error occured, please try again", Toast.LENGTH_LONG).show();
         postActivity.finish();
     }
 
@@ -85,7 +85,6 @@ public class PostJsonTask extends AsyncTask<JSONObject,Void,Boolean> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // TODO: return type always true
-        return true;
+        return false;
     }
 }

@@ -51,6 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mPostMarker.remove();
                 mPostMarker = null;
             }
+            // clear needed to update the map after PUT request!
+            mMap.clear();
             LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
             loadGeoJsonTask.execute(Constants.url);
         }

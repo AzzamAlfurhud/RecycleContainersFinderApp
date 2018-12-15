@@ -85,18 +85,17 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
             if(status.equalsIgnoreCase("Empty")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
                         .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
             else if(status.equalsIgnoreCase("Normal")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
                         .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             }
             else if(status.equalsIgnoreCase("Full")){
                 mMO.position(latLng).title("Type: "+type+" Status: "+status)
                         .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
             }
 
             mMap.addMarker(mMO);

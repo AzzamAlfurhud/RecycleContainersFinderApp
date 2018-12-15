@@ -50,6 +50,34 @@
             android:id="@+id/rb_put_other"/>
     </RadioGroup>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:gravity="center"
+        android:textSize="24dp"/>
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rg_put_status">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            android:id="@+id/rb_put_empty"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Normal"
+            android:id="@+id/rb_put_normal"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full"
+            android:id="@+id/rb_put_full"/>
+    </RadioGroup>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

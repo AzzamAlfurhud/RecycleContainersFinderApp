@@ -47,62 +47,59 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         //get type and status
-        JSONArray featureS,coordinates;
+        JSONArray featureS = null,coordinates;
         JSONObject feature,properties,geometry;
-        properties = null;
         String id = "";
         String type = "";
         String status = "";
         LatLng latLng = null;
 
-        //adding the layer to the map
-        GeoJsonLayer layer1 = null;
-        layer1 = new GeoJsonLayer(mMap,jsonObject);
-        layer1.addLayerToMap();
+        try {
+            featureS = (JSONArray) jsonObject.get("features");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (featureS!=null) {
+            for (int i = 0;i<featureS.length();i++) {
+                try {
+                    feature = featureS.getJSONObject(i);
+                    properties = (JSONObject) feature.get("properties");
+                    geometry = (JSONObject) feature.get("geometry");
+                    coordinates = (JSONArray) geometry.get("coordinates");
+                    latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
+                    id = properties.getString("recycleId");
+                    type = properties.getString("recycleType");
+                    status = properties.getString("recycleStatus");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //set properties object for markers' map
+                MarkerOptions mMO = new MarkerOptions();
+                // customize color
+                String snippet = id+"^"+type+"^"+status;
+                if(status.equalsIgnoreCase("Empty")){
+                    mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                            .snippet(snippet)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                }
+                else if(status.equalsIgnoreCase("Normal")){
+                    mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                            .snippet(snippet)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                }
+                else if(status.equalsIgnoreCase("Full")){
+                    mMO.position(latLng).title("Type: "+type+" Status: "+status)
+                            .snippet(snippet)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                }
 
-
-        //loop through features to show infoWindow
-        Iterable<GeoJsonFeature> GF = layer1.getFeatures();
-        int i = 0;
-        for (GeoJsonFeature g: GF
-             ) {
-            try {
-                featureS = (JSONArray) jsonObject.get("features");
-                feature = featureS.getJSONObject(i++);
-                properties = (JSONObject) feature.get("properties");
-                geometry = (JSONObject) feature.get("geometry");
-                coordinates = (JSONArray) geometry.get("coordinates");
-                latLng = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
-                id = properties.getString("recycleId");
-                type = properties.getString("recycleType");
-                status = properties.getString("recycleStatus");
-            } catch (JSONException e) {
-                e.printStackTrace();
+                mMap.addMarker(mMO);
             }
-            //set properties object for markers' map
-            MarkerOptions mMO = g.getMarkerOptions();
-            // customize color
-            String snippet = id+"^"+type+"^"+status;
-            if(status.equalsIgnoreCase("Empty")){
-                mMO.position(latLng).title("Type: "+type+" Status: "+status)
-                        .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            }
-            else if(status.equalsIgnoreCase("Normal")){
-                mMO.position(latLng).title("Type: "+type+" Status: "+status)
-                        .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            }
-            else if(status.equalsIgnoreCase("Full")){
-                mMO.position(latLng).title("Type: "+type+" Status: "+status)
-                        .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-            }
-
-            mMap.addMarker(mMO);
         }
 
+/*
         layer1.removeLayerFromMap();
+*/
 
 
 

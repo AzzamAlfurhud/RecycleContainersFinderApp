@@ -60,6 +60,7 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
         layer1 = new GeoJsonLayer(mMap,jsonObject);
         layer1.addLayerToMap();
 
+
         //loop through features to show infoWindow
         Iterable<GeoJsonFeature> GF = layer1.getFeatures();
         int i = 0;
@@ -99,8 +100,10 @@ public class LoadGeoJsonTask extends AsyncTask<String, Void, JSONObject> {
             }
 
             mMap.addMarker(mMO);
-
         }
+
+        layer1.removeLayerFromMap();
+
 
 
 

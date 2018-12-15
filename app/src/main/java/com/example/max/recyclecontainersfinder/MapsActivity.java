@@ -87,17 +87,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng center = new LatLng(24.717517, 46.624301);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
         }
-        mMap.setMyLocationEnabled(true);
+
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
         loadGeoJsonTask.execute(Constants.url);
 

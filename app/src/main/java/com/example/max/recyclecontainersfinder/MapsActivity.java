@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,8 +82,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
         loadGeoJsonTask.execute(Constants.url);
+
+        //filters
+        final EditText filterText = findViewById(R.id.et_filter);
+        Button filterButton = findViewById(R.id.btn_map_activity);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userInput = filterText.getText().toString();
+                String url;
+                if(userInput.equalsIgnoreCase("None")
+                        || userInput.equalsIgnoreCase(""))
+                    url = Constants.url;
+                else
+                    url = Constants.url + "/getByType/"+userInput;
+                mMap.clear();
+                LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
+                loadGeoJsonTask.execute(url);
+            }
+        });
+
         
-        
+        /*// Filter -- Spinner
+        Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
+
+        // Create an ArrayAdapter using the string array and a default spinner
+        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
+                .createFromResource(this, R.array.filter_array,
+                        android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        staticAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        staticSpinner.setAdapter(staticAdapter);*/
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {

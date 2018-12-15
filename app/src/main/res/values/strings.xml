@@ -3,7 +3,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="button_activity_maps">Update Map</string>
     <string-array name="filter_array">
-        <item>No Filter</item>
+        <item>None</item>
         <item>General</item>
         <item>Paper</item>
         <item>Bread</item>

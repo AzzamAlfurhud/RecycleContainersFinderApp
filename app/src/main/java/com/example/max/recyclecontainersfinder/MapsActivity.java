@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +24,9 @@ import com.google.android.gms.maps.model.PointOfInterest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.login.LoginException;
@@ -35,6 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Marker mPostMarker;
     private String[] values;
+    private String userInput = "";
 
 
     @Override
@@ -83,13 +87,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LoadGeoJsonTask loadGeoJsonTask = new LoadGeoJsonTask(mMap);
         loadGeoJsonTask.execute(Constants.url);
 
-        //filters
-        final EditText filterText = findViewById(R.id.et_filter);
+        // Filter -- Spinner
+        Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
+
+        // Create an ArrayAdapter using the string array and a default spinner
+        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
+                .createFromResource(MapsActivity.this, R.array.filter_array,
+                        android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        staticAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        staticSpinner.setAdapter(staticAdapter);
+
+
+        staticSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                userInput = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        final EditText filterText = findViewById(R.id.et_filter);
         Button filterButton = findViewById(R.id.btn_map_activity);
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userInput = filterText.getText().toString();
                 String url;
                 if(userInput.equalsIgnoreCase("None")
                         || userInput.equalsIgnoreCase(""))
@@ -101,22 +131,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loadGeoJsonTask.execute(url);
             }
         });
-
-        
-        /*// Filter -- Spinner
-        Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
-
-        // Create an ArrayAdapter using the string array and a default spinner
-        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
-                .createFromResource(this, R.array.filter_array,
-                        android.R.layout.simple_spinner_item);
-
-        // Specify the layout to use when the list of choices appears
-        staticAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Apply the adapter to the spinner
-        staticSpinner.setAdapter(staticAdapter);*/
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -152,17 +166,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     marker.setSnippet("");
                     marker.showInfoWindow();
                     marker.setSnippet(tempSnippet);
-                    values = tempSnippet.split("\\^");
+                    if(tempSnippet!=null)
+                        values = tempSnippet.split("\\^");
                 }
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     // TODO implement putActivity
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        Intent intent = new Intent(MapsActivity.this,PutActivity.class);
-                        intent.putExtra(PutActivity.RECYCLE_ID,values[0]);
-                        intent.putExtra(PutActivity.TYPE_ID,values[1]);
-                        intent.putExtra(PutActivity.STATUS_ID,values[2]);
-                        MapsActivity.this.startActivity(intent);
+                        if (values.length > 0) {
+                            Intent intent = new Intent(MapsActivity.this,PutActivity.class);
+                            intent.putExtra(PutActivity.RECYCLE_ID,values[0]);
+                            intent.putExtra(PutActivity.TYPE_ID,values[1]);
+                            intent.putExtra(PutActivity.STATUS_ID,values[2]);
+                            MapsActivity.this.startActivity(intent);
+                        }
                     }
                 });
                 return true;
